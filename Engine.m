@@ -16,9 +16,21 @@
 % 	TimeStep: time step in seconds
 %
 function NewCelsetialObjects RunStep(CelestialObjects, TimeStep)
-
-	NewCelestialObjects = RemoveCollisions(CelestialObjects)	
+	CopyObjs = zeros(length(CelestialObjects), 7);
+	idx = 1;
+	for Obj = CelestialObjects
+		Fx, Fy = CalculateForces(CelestialObjects, Obj(2), Obj(3), Obj(4));
+		Ax = Fx / Obj(4);
+		Ay = Fy / Obj(4);
+		Obj(6) = Obj(6) + (Ax * TimeStep);
+		Obj(7) = Obj(7) + (Ay * TimeStep);
+		Obj(2) = Obj(2) + (Obj(6) * TimeStep);
+		Obj(3) = Obj(3) + (Obj(7) * TimeStep);
+		CopyObjs(idx) = Obj;
+	end
+	NewCelestialObjects = RemoveCollisions(CopyObjs)	
 end
+
 % Removes CelestialObjects that have collided with eachother. The smaller celestial object is always destroyed
 % in preference to larger celestial objects
 function CelestialObjects RemoveCollisions(CelestialObjects)
@@ -54,7 +66,7 @@ function [X, Y] CalculateForces(CelestialObjects, MyX, MyY, MyMass)
 		dy = (Obj(3) - MyY);
 		dist2 = dx ^ 2 + dy ^ 2;
 		dist2 = dist2 * 1000; % km -> m
-		F = (MyMass + Obj(4)) / dist2;
+		F = 6.67E-11 * (MyMass + Obj(4)) / dist2;
 		theta = atan2(dy, dx);
 		X = X + F * cos(theta);
 		Y = Y + F * sin(theta);
