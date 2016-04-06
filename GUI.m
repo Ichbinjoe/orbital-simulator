@@ -184,22 +184,38 @@ Ycoord = str2double(get(handles.editY,'String'));
 Rad = str2double(get(handles.editRad,'String'));
 Name = str2double(get(handles.editName,'String'));
 if (~isnan(Xcoord)) && (~isnan(Ycoord)) && (~isnan(Rad)) && isnan(Name)
-    listbox = get(handles.objectList,'string');
-    len = length(listbox);
-    disp(len)
-    if len < 1
-        set(handles.objectList,'String',get(handles.editName,'String'));
-    else
-        listbox{len+1} = get(handles.editName,'String');
-        set(handles.objectList, 'String', listbox);
-    end
-    axes(handles.axes1);
-    ang=0:0.01:2*pi; 
-    xp=Rad*cos(ang);
-    yp=Rad*sin(ang);
-    plot(Xcoord+xp,Ycoord+yp);
+    list = get(handles.objectList,'String');
+    Name = get(handles.editName,'String');
+    len = length(list);
+    list{end+1} = Name;
+    set(handles.editTime,'String','');
+    set(handles.objectList,'String',list);
+    set(handles.editX,'String','');
+    set(handles.editY,'String','');
+    set(handles.editRad,'String','');
+    set(handles.editName,'String','');
+    set(handles.editVelocity,'String','');
 end
 
+
+% --- Executes during object creation, after setting all properties.
+function editTime_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editName (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in saveEdit.
+function editTime_Callback(hObject, eventdata, handles)
+% hObject    handle to saveEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
 
 
 function editName_Callback(hObject, eventdata, handles)
@@ -425,6 +441,11 @@ function Clearbutton_Callback(hObject, eventdata, handles)
 % hObject    handle to Clearbutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+set(handles.editX,'String','');
+set(handles.editY,'String','');
+set(handles.editRad,'String','');
+set(handles.editName,'String','');
+set(handles.editVelocity,'String','');
 
 
 % --- Executes on button press in DeleteButton.
