@@ -17,9 +17,8 @@
 %
 function NewCelsetialObjects RunStep(CelestialObjects, TimeStep)
 
-	
-	return removeCollisions(CelestialObjects)
-
+	NewCelestialObjects = RemoveCollisions(CelestialObjects)	
+end
 % Removes CelestialObjects that have collided with eachother. The smaller celestial object is always destroyed
 % in preference to larger celestial objects
 function CelestialObjects RemoveCollisions(CelestialObjects)
@@ -42,7 +41,23 @@ function CelestialObjects RemoveCollisions(CelestialObjects)
 			end
 		end
 	end
-	CelestialObjects(removals) = [];	
-	return CelestialObjects;
+	CelestialObjects(removals) = [];
+end
+
+
+% Calculates Forces between this celestial object and an object with a position and a mass
+function [X, Y] CalculateForces(CelestialObjects, MyX, MyY, MyMass)
+	X = 0;
+	Y = 0;
+	for Obj = CelsetialObjects
+		dx = (Obj(2) - MyX);
+		dy = (Obj(3) - MyY);
+		dist2 = dx ^ 2 + dy ^ 2;
+		dist2 = dist2 * 1000; % km -> m
+		F = (MyMass + Obj(4)) / dist2;
+		theta = atan2(dy, dx);
+		X = X + F * cos(theta);
+		Y = Y + F * sin(theta);
+	end
 end
 
