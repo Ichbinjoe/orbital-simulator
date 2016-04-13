@@ -1,6 +1,9 @@
 % Controls viewing of objects on the celestial viewer
 %
 % Graph: Graphs a set of celestial objects onto a matlab graph
+%
+% @author Joseph Hirschfeld <joe@ibj.io>
+
 
 global PADDING
 PADDING = 10;

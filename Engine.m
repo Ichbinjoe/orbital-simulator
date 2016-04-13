@@ -15,6 +15,8 @@
 % 	CelestialObjects: vector of all current celestial objects
 % 	TimeStep: time step in seconds
 %
+% @author Joseph Hirschfeld <joe@ibj.io>
+
 function NewCelsetialObjects RunStep(CelestialObjects, TimeStep)
 	CopyObjs = zeros(length(CelestialObjects), 7);
 	idx = 1;
