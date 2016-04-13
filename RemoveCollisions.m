@@ -1,7 +1,7 @@
 function [CelestialObjects] = RemoveCollisions(CelestialObjects)
-	removals = []
+	removals = [];
 	if length(CelestialObjects) < 2
-		return CelestialObjects;
+		return
 	end
 	for i = 1:length(celestialObjets) - 1
 		for j = i:length(celestialObjects)

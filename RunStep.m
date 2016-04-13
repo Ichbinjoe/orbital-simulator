@@ -2,7 +2,7 @@
 %
 % RunStep(CelestialObjects, TimeStep);
  
-function [NewCelsetialObjects] = RunStep(CelestialObjects, TimeStep)
+function [NewCelestialObjects] = RunStep(CelestialObjects, TimeStep)
 	CopyObjs = zeros(length(CelestialObjects), 7);
 	idx = 1;
 	for Obj = CelestialObjects
@@ -16,7 +16,7 @@ function [NewCelsetialObjects] = RunStep(CelestialObjects, TimeStep)
 		CopyObjs(idx) = Obj;
 		idx = idx + 1;
 	end
-	NewCelestialObjects = RemoveCollisions(CopyObjs)	
+	NewCelestialObjects = RemoveCollisions(CopyObjs);	
 end
 
   
