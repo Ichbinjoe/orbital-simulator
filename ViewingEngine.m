@@ -8,14 +8,14 @@
 global PADDING
 PADDING = 10;
 
-function SetAspectRatio(x, y)
+function [] =  SetAspectRatio(x, y)
 	global X_WINDOW
 	global Y_WINDOW
 	X_WINDOW = x;
 	Y_WINDOW = y;
 end
 
-function (MinX, MinY, MaxX, MaxY) AdjustAspectRatio(MinX, MinY, MaxX, MaxY)
+function [MinX, MinY, MaxX, MaxY] = AdjustAspectRatio(MinX, MinY, MaxX, MaxY)
 	dx = MaxX - MinX;
 	dy = MaxY - MinY;
 	dx = dx + PADDING;
@@ -37,7 +37,7 @@ function (MinX, MinY, MaxX, MaxY) AdjustAspectRatio(MinX, MinY, MaxX, MaxY)
 end
 
 % Graphs a celestial object field onto the passed graph
-function Graph(CelestialObjects, Graph)
+function [] =  Graph(CelestialObjects, Graph)
 	MinX, MaxX, MinY, MaxY = GetBounds(CelestialObjects);
 	MinX, MinY, MaxX, MaxY = AdjustAspectRatio(MinX, MinY, MaxX, MaxY);
 	set(Graph, 'XLim', [MinX MaxX]);
@@ -48,7 +48,7 @@ function Graph(CelestialObjects, Graph)
 	plot(Xs, Ys);	
 end
 
-function (MinX, MaxX, MinY, MaxY) GetBounds(Objects)
+function [MinX, MaxX, MinY, MaxY] = GetBounds(Objects)
 	MinX = min(Objects(:,2) - Objects(:,5));
 	MaxX = max(Objects(:,2) + Objects(:,5));
 	MinY = min(Objects(:,3) - Objects(:,5));
@@ -56,7 +56,7 @@ function (MinX, MaxX, MinY, MaxY) GetBounds(Objects)
 end
 
 % Returns an x y set from a center x, center y, and radius
-function [X,Y] PlotCircle(cx, cy, r, points)
+function [X,Y] = PlotCircle(cx, cy, r, points)
 	X = zeros(points, 1);
 	Y = zeros(points, 1);
 	idx = 1;

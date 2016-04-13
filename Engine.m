@@ -17,7 +17,7 @@
 %
 % @author Joseph Hirschfeld <joe@ibj.io>
 
-function NewCelsetialObjects RunStep(CelestialObjects, TimeStep)
+function [NewCelsetialObjects] = RunStep(CelestialObjects, TimeStep)
 	CopyObjs = zeros(length(CelestialObjects), 7);
 	idx = 1;
 	for Obj = CelestialObjects
@@ -35,7 +35,7 @@ end
 
 % Removes CelestialObjects that have collided with eachother. The smaller celestial object is always destroyed
 % in preference to larger celestial objects
-function CelestialObjects RemoveCollisions(CelestialObjects)
+function [CelestialObjects] = RemoveCollisions(CelestialObjects)
 	removals = []
 	if length(CelestialObjects) < 2
 		return CelestialObjects;
@@ -60,7 +60,7 @@ end
 
 
 % Calculates Forces between this celestial object and an object with a position and a mass
-function [X, Y] CalculateForces(CelestialObjects, MyX, MyY, MyMass)
+function [X, Y] = CalculateForces(CelestialObjects, MyX, MyY, MyMass)
 	X = 0;
 	Y = 0;
 	for Obj = CelsetialObjects
