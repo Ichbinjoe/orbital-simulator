@@ -1,5 +1,4 @@
 
-
 function varargout = GUI(varargin)
 %GUI M-file for GUI.fig
 %      GUI, by itself, creates a new GUI or raises the existing
@@ -152,11 +151,29 @@ end
 
 
 % --- Executes on selection change in objectList.
-function objectList_Callback(hObject, eventdata, handles)
+function objectList_Callback(hObject, eventdata, handles, array, num)
 % hObject    handle to objectList (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+choice = get(handles.objectList,'Value');
 
+switch choice
+    case 1
+        
+    case 2
+        
+    case 3
+        
+    case 4
+        
+    case 5
+        
+    case 6
+        
+    case 7
+        
+    case 8
+end
 % Hints: contents = cellstr(get(hObject,'String')) returns objectList contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from objectList
 
@@ -179,9 +196,14 @@ function Add_Callback(hObject, eventdata, handles)
 % hObject    handle to Add (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+persistent array;
+persistent num;
 Xcoord = str2double(get(handles.editX,'String'));
 Ycoord = str2double(get(handles.editY,'String'));
 Rad = str2double(get(handles.editRad,'String'));
+Mass = str2double(get(handles.earthMass,'String'));
+Vel = str2double(get(handles.editVelocity,'String'));
+Time = str2double(get(handles.editTime,'String'));
 Name = str2double(get(handles.editName,'String'));
 if (~isnan(Xcoord)) && (~isnan(Ycoord)) && (~isnan(Rad)) && isnan(Name)
     list = get(handles.objectList,'String');
@@ -195,6 +217,16 @@ if (~isnan(Xcoord)) && (~isnan(Ycoord)) && (~isnan(Rad)) && isnan(Name)
     set(handles.editRad,'String','');
     set(handles.editName,'String','');
     set(handles.editVelocity,'String','');
+    if isempty(array)
+        array = zeros(30,7);
+        num = 0;
+    end
+    num = num+1;
+    Nsum = sum(Name);
+    set(handles.objectList,'Value',Nsum);
+    array(num,:) = [Nsum;Xcoord;Ycoord;Rad;Mass;Vel;Time];
+    fprintf('sum = %s',Nsum);
+    objectList_Callback(hObject,eventdata,handles,array,num);
 end
 
 
@@ -216,7 +248,13 @@ function editTime_Callback(hObject, eventdata, handles)
 % hObject    handle to saveEdit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+Time = str2double(get(handles.editTime,'String'));
+if isnan(Time)
+    Time = 0;
+    set(handles.editTime,'String','');
+    errordlg('Time must be a number.');
+    pause(2);
+end
 
 function editName_Callback(hObject, eventdata, handles)
 % hObject    handle to editName (see GCBO)
@@ -299,6 +337,13 @@ function editVelocity_Callback(hObject, eventdata, handles)
 % hObject    handle to editVelocity (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+V = str2double(get(handles.editVelocity,'String'));
+if isnan(V)
+    Rad = 0;
+    set(handles.editVelocity,'String','');
+    errordlg('Velocity must be a number.');
+    pause(2);
+end
 
 % Hints: get(hObject,'String') returns contents of editVelocity as text
 %        str2double(get(hObject,'String')) returns contents of editVelocity as a double
@@ -354,11 +399,11 @@ function editRad_Callback(hObject, eventdata, handles)
 % hObject    handle to editRad (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-Rad = str2double(get(handles.editX,'String'));
+Rad = str2double(get(handles.editRad,'String'));
 if isnan(Rad)
     Rad = 0;
     set(handles.editRad,'String','');
-    errordlg('Input must be a number.');
+    errordlg('Radius must be a number.');
     pause(2);
 end
 % Hints: get(hObject,'String') returns contents of editRad as text
@@ -387,7 +432,7 @@ Ycoord = str2double(get(handles.editY,'String'));
 if isnan(Ycoord)
     Ycoord = 0;
     set(handles.editY,'String','');
-    errordlg('Input must be a number.');
+    errordlg('Y value must be a number.');
     pause(2);
 end
 % Hints: get(hObject,'String') returns contents of editY as text
@@ -416,7 +461,7 @@ Xcoord = str2double(get(handles.editX,'String'));
 if isnan(Xcoord)
     Xcoord = 0;
     set(handles.editX,'String','');
-    errordlg('Input must be a number.');
+    errordlg('X value must be a number.');
     pause(2);
 end
 % Hints: get(hObject,'String') returns contents of editX as text
