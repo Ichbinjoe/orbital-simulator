@@ -155,25 +155,6 @@ function objectList_Callback(hObject, eventdata, handles, array, num)
 % hObject    handle to objectList (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-choice = get(handles.objectList,'Value');
-
-switch choice
-    case 1
-        
-    case 2
-        
-    case 3
-        
-    case 4
-        
-    case 5
-        
-    case 6
-        
-    case 7
-        
-    case 8
-end
 % Hints: contents = cellstr(get(hObject,'String')) returns objectList contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from objectList
 
@@ -196,10 +177,7 @@ function Add_Callback(hObject, eventdata, handles)
 % hObject    handle to Add (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-persistent array;
-persistent num;
-Xcoord = str2double(get(handles.editX,'String'));
-Ycoord = str2double(get(handles.editY,'String'));
+planets(9,1) = [1.989E30,432687,0,0;.33E24,2439.5,47.4,57.9E6;4.87E24,6052,35,108.2E6;5.97E24,6378,29.8,149.6E6;.642E24,3396,24.1,227.9E6;1898E24,71492,13.1,778.E6;569E24,60268,9.7,1433.5E6;86.8E24,25559,6.8,2872.5E6;102E24,24764,5.4,4495.1E6];
 Rad = str2double(get(handles.editRad,'String'));
 Mass = str2double(get(handles.earthMass,'String'));
 Vel = str2double(get(handles.editVelocity,'String'));
@@ -212,21 +190,34 @@ if (~isnan(Xcoord)) && (~isnan(Ycoord)) && (~isnan(Rad)) && isnan(Name)
     list{end+1} = Name;
     set(handles.editTime,'String','');
     set(handles.objectList,'String',list);
-    set(handles.editX,'String','');
-    set(handles.editY,'String','');
     set(handles.editRad,'String','');
     set(handles.editName,'String','');
     set(handles.editVelocity,'String','');
-    if isempty(array)
-        array = zeros(30,7);
-        num = 0;
-    end
-    num = num+1;
-    Nsum = sum(Name);
-    set(handles.objectList,'Value',Nsum);
-    array(num,:) = [Nsum;Xcoord;Ycoord;Rad;Mass;Vel;Time];
-    fprintf('sum = %s',Nsum);
+    array = [Xcoord;Ycoord;Rad;Mass;Vel;Time];
     objectList_Callback(hObject,eventdata,handles,array,num);
+    choice = get(handles.objectList,'Value');
+    y = 0;
+    switch choice
+        case 1
+            x = planets(1,4)+planets(1,2);
+        case 2
+            x = planets(2,4)+planets(2,2);
+        case 3
+            x = planets(3,4)+planets(3,2);
+        case 4
+            x = planets(4,4)+planets(4,2);
+        case 5
+            x = planets(5,4)+planets(5,2);
+        case 6
+            x = planets(6,4)+planets(6,2);
+        case 7
+            x = planets(7,4)+planets(7,2);
+        case 8
+            x = planets(8,4)+planets(8,2);
+        case 9
+            x = planets(9,4)+planets(9,2);
+    end
+    fprintf('x = ',x);
 end
 
 
