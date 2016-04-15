@@ -99,7 +99,7 @@ end
 
 
 % --- Executes on button press in PlayButton.
-function PlayButton_Callback(hObject, eventdata, handles)
+function PlayButton_Callback(hObject, eventdata, handles,CelestialObjects)
 % hObject    handle to PlayButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -178,44 +178,53 @@ function Add_Callback(hObject, eventdata, handles)
 % hObject    handle to Add (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-planets(9,1) = [1.989E30,432687,0,0;.33E24,2439.5,47.4,57.9E6;4.87E24,6052,35,108.2E6;5.97E24,6378,29.8,149.6E6;.642E24,3396,24.1,227.9E6;1898E24,71492,13.1,778.E6;569E24,60268,9.7,1433.5E6;86.8E24,25559,6.8,2872.5E6;102E24,24764,5.4,4495.1E6];
-Rad = str2double(get(handles.editRad,'String'));
+CelestialObjects(:,:) = [0 0 1.989E30 432687 0;57.9E6 0 .33E24 2439.5 47.4;108.2E6 0 4.87E24 6052 35;149.6E6 0 5.97E24 6378 29.8;227.9E6 0 .642E24 3396 24.1;778.E6 0 1898E24 71492 13.1;1433.5E6 0 569E24 60268 9.7;2872.5E6 0 86.8E24 25559 6.8;4495.1E6 0 102E24 24764 5.4;0 0 0 0 0];
+Time = str2double(get(handles.editTime,'String'));
+Mass = str2double(get(handles.earthMass,'String'));
+Angle = str2double(get(handles.editAngle,'String'));
+Vel = str2double(get(handles.editVelocity,'String'));
 Name = str2double(get(handles.editName,'String'));
-if (~isnan(Xcoord)) && (~isnan(Ycoord)) && (~isnan(Rad)) && isnan(Name)
-    list = get(handles.objectList,'String');
+if ~isnan(Mass) && ~isnan(Time) && (~isnan(Angle)) && (~isnan(Vel)) && isnan(Name)
     Name = get(handles.editName,'String');
-    len = length(list);
-    list{end+1} = Name;
+    set(handles.editAngle,'String','');
+    set(handles.earthMass,'String','');
     set(handles.editTime,'String','');
-    set(handles.objectList,'String',list);
-    set(handles.editRad,'String','');
+    set(handles.editVelocity,'String','');
     set(handles.editName,'String','');
     set(handles.editVelocity,'String','');
-    array = [Xcoord;Ycoord;Rad;Mass;Vel;Time];
-    objectList_Callback(hObject,eventdata,handles,array,num);
     choice = get(handles.objectList,'Value');
     y = 0;
     switch choice
         case 1
-            x = planets(1,4)+planets(1,2);
+            choice = 'Sun';
+            x = CelestialObjects(1,1)+2*CelestialObjects(1,4);
         case 2
-            x = planets(2,4)+planets(2,2);
+            choice = 'Mercury';
+            x = CelestialObjects(2,1)+CelestialObjects(2,4);
         case 3
-            x = planets(3,4)+planets(3,2);
+            choice = 'Venus';
+            x = CelestialObjects(3,1)+CelestialObjects(3,4);
         case 4
-            x = planets(4,4)+planets(4,2);
+            choice = 'Earth';
+            x = CelestialObjects(4,1)+CelestialObjects(4,4);
         case 5
-            x = planets(5,4)+planets(5,2);
+            choice = 'Mars';
+            x = CelestialObjects(5,1)+CelestialObjects(5,4);
         case 6
-            x = planets(6,4)+planets(6,2);
+            choice = 'Jupiter';
+            x = CelestialObjects(6,1)+CelestialObjects(6,4);
         case 7
-            x = planets(7,4)+planets(7,2);
+            choice = 'Saturn';
+            x = CelestialObjects(7,1)+CelestialObjects(7,4);
         case 8
-            x = planets(8,4)+planets(8,2);
+            choice = 'Uranus';
+            x = CelestialObjects(8,1)+CelestialObjects(8,4);
         case 9
-            x = planets(9,4)+planets(9,2);
+            choice = 'Neptune';
+            x = CelestialObjects(9,1)+CelestialObjects(9,4);
     end
-    fprintf('x = ',x);
+    CelestialObjects(10,:) = [x y 0 Mass Vel];
+    RunStep(CelestialObjects,1);
 end
 
 
@@ -259,14 +268,6 @@ function editName_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
-% --- Executes on button press in saveEdit.
-function saveEdit_Callback(hObject, eventdata, handles)
-% hObject    handle to saveEdit (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
 
 
 function dispV_Callback(hObject, eventdata, handles)
@@ -338,15 +339,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in CalcCheck.
-function CalcCheck_Callback(hObject, eventdata, handles)
-% hObject    handle to CalcCheck (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of CalcCheck
-
-
 
 function earthMass_Callback(hObject, eventdata, handles)
 % hObject    handle to earthMass (see GCBO)
@@ -371,7 +363,7 @@ end
 
 
 
-function editRad_Callback(hObject, eventdata, handles)
+function editAngle_Callback(hObject, eventdata, handles)
 % hObject    handle to editRad (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -387,7 +379,7 @@ end
 
 
 % --- Executes during object creation, after setting all properties.
-function editRad_CreateFcn(hObject, eventdata, handles)
+function editAngle_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to editRad (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
@@ -400,63 +392,6 @@ end
 
 
 
-function editY_Callback(hObject, eventdata, handles)
-% hObject    handle to editY (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-Ycoord = str2double(get(handles.editY,'String'));
-if isnan(Ycoord)
-    Ycoord = 0;
-    set(handles.editY,'String','');
-    errordlg('Input must be a number.');
-    pause(2);
-end
-% Hints: get(hObject,'String') returns contents of editY as text
-%        str2double(get(hObject,'String')) returns contents of editY as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function editY_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to editY (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function editX_Callback(hObject, eventdata, handles)
-% hObject    handle to editX (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-Xcoord = str2double(get(handles.editX,'String'));
-if isnan(Xcoord)
-    Xcoord = 0;
-    set(handles.editX,'String','');
-    errordlg('Input must be a number.');
-    pause(2);
-end
-% Hints: get(hObject,'String') returns contents of editX as text
-%        str2double(get(hObject,'String')) returns contents of editX as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function editX_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to editX (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
 % --- Executes on button press in Clearbutton.
 function Clearbutton_Callback(hObject, eventdata, handles)
 % hObject    handle to Clearbutton (see GCBO)
@@ -467,14 +402,6 @@ set(handles.editY,'String','');
 set(handles.editRad,'String','');
 set(handles.editName,'String','');
 set(handles.editVelocity,'String','');
-
-
-% --- Executes on button press in DeleteButton.
-function DeleteButton_Callback(hObject, eventdata, handles)
-% hObject    handle to DeleteButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
 
 
 

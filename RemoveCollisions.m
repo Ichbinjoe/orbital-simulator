@@ -3,8 +3,8 @@ function [CelestialObjects] = RemoveCollisions(CelestialObjects)
 	if length(CelestialObjects) < 2
 		return
 	end
-	for i = 1:length(celestialObjets) - 1
-		for j = i:length(celestialObjects)
+	for i = 1:length(CelestialObjects) - 1
+		for j = i:length(CelestialObjects)
 			rdus = CelestialObjects(i,5) + CelestialObjects(j, 5);
 			c_dist_x = CelestialObjects(i, 2) + CelestialObjects(j, 2);
 			c_dist_y = CelestialObjects(i, 3) + CelestialObjects(j, 3);
