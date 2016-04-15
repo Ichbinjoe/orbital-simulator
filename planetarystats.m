@@ -1,3 +1,8 @@
+SunMass(kg)=1.989e30
+SunRadius(KM)=432687
+SunVelocity(KM/sec)=0
+SunDistance(KM)=0
+%%
 MercuryMass=.33e24
 MercuryRadius=2439.5
 MercuryVelocity=47.4

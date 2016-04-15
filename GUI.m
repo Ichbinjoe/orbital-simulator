@@ -1,4 +1,5 @@
 
+
 function varargout = GUI(varargin)
 %GUI M-file for GUI.fig
 %      GUI, by itself, creates a new GUI or raises the existing
@@ -151,7 +152,7 @@ end
 
 
 % --- Executes on selection change in objectList.
-function objectList_Callback(hObject, eventdata, handles, array, num)
+function objectList_Callback(hObject, eventdata, handles)
 % hObject    handle to objectList (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -179,9 +180,6 @@ function Add_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 planets(9,1) = [1.989E30,432687,0,0;.33E24,2439.5,47.4,57.9E6;4.87E24,6052,35,108.2E6;5.97E24,6378,29.8,149.6E6;.642E24,3396,24.1,227.9E6;1898E24,71492,13.1,778.E6;569E24,60268,9.7,1433.5E6;86.8E24,25559,6.8,2872.5E6;102E24,24764,5.4,4495.1E6];
 Rad = str2double(get(handles.editRad,'String'));
-Mass = str2double(get(handles.earthMass,'String'));
-Vel = str2double(get(handles.editVelocity,'String'));
-Time = str2double(get(handles.editTime,'String'));
 Name = str2double(get(handles.editName,'String'));
 if (~isnan(Xcoord)) && (~isnan(Ycoord)) && (~isnan(Rad)) && isnan(Name)
     list = get(handles.objectList,'String');
@@ -239,13 +237,7 @@ function editTime_Callback(hObject, eventdata, handles)
 % hObject    handle to saveEdit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-Time = str2double(get(handles.editTime,'String'));
-if isnan(Time)
-    Time = 0;
-    set(handles.editTime,'String','');
-    errordlg('Time must be a number.');
-    pause(2);
-end
+
 
 function editName_Callback(hObject, eventdata, handles)
 % hObject    handle to editName (see GCBO)
@@ -328,13 +320,6 @@ function editVelocity_Callback(hObject, eventdata, handles)
 % hObject    handle to editVelocity (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-V = str2double(get(handles.editVelocity,'String'));
-if isnan(V)
-    Rad = 0;
-    set(handles.editVelocity,'String','');
-    errordlg('Velocity must be a number.');
-    pause(2);
-end
 
 % Hints: get(hObject,'String') returns contents of editVelocity as text
 %        str2double(get(hObject,'String')) returns contents of editVelocity as a double
@@ -390,11 +375,11 @@ function editRad_Callback(hObject, eventdata, handles)
 % hObject    handle to editRad (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-Rad = str2double(get(handles.editRad,'String'));
+Rad = str2double(get(handles.editX,'String'));
 if isnan(Rad)
     Rad = 0;
     set(handles.editRad,'String','');
-    errordlg('Radius must be a number.');
+    errordlg('Input must be a number.');
     pause(2);
 end
 % Hints: get(hObject,'String') returns contents of editRad as text
@@ -423,7 +408,7 @@ Ycoord = str2double(get(handles.editY,'String'));
 if isnan(Ycoord)
     Ycoord = 0;
     set(handles.editY,'String','');
-    errordlg('Y value must be a number.');
+    errordlg('Input must be a number.');
     pause(2);
 end
 % Hints: get(hObject,'String') returns contents of editY as text
@@ -452,7 +437,7 @@ Xcoord = str2double(get(handles.editX,'String'));
 if isnan(Xcoord)
     Xcoord = 0;
     set(handles.editX,'String','');
-    errordlg('X value must be a number.');
+    errordlg('Input must be a number.');
     pause(2);
 end
 % Hints: get(hObject,'String') returns contents of editX as text
