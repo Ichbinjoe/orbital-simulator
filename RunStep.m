@@ -18,8 +18,7 @@
 	%end
 	%NewCelestialObjects = RemoveCollisions(CopyObjs);	
 %end
-function [NewCelestialObjects] = RunStep(CelestialObjects, TimeStep)
-	CopyObjs = zeros(length(CelestialObjects), 7);
+function [CelestialObjects] = RunStep(CelestialObjects, TimeStep)
 	idx = 1;
 	for Obj = CelestialObjects %%Zack Edited
 		[Fx Fy] = CalculateForces(CelestialObjects, Obj(1), Obj(2), Obj(3)); 
@@ -31,5 +30,5 @@ function [NewCelestialObjects] = RunStep(CelestialObjects, TimeStep)
 		CelestialObjects(idx,2) = CelestialObjects(idx,2) + (CelestialObjects(idx,5) * TimeStep);
 		idx = idx + 1;
 	end
-	NewCelestialObjects = RemoveCollisions(CelestialObjects);
-  
+	CelestialObjects = RemoveCollisions(CelestialObjects);
+end 
