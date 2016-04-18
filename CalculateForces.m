@@ -18,14 +18,18 @@ function [X, Y] = CalculateForces(CelestialObjects, MyX, MyY, MyMass)
 function [X, Y] = CalculateForces(CelestialObjects, MyX, MyY, MyMass)
 	X = 0;
 	Y = 0;
-    idx = 1;
+	idx = 1;
 	for Obj = CelestialObjects
 		dx = (CelestialObjects(idx,1) - MyX);
 		dy = (CelestialObjects(idx,2) - MyY);
 		dist2 = dx ^ 2 + dy ^ 2;
+		if dist2 == 0
+			continue
+		end
 		dist2 = dist2 * 1000; % km -> m
 		F = 6.67E-11 * (MyMass + CelestialObjects(idx,3)) / dist2;
 		theta = atan2(dy, dx);
 		X = X + F * cos(theta);
 		Y = Y + F * sin(theta);
-    end
+		idx = idx + 1;
+  	 end
