@@ -21,14 +21,14 @@
 function [CelestialObjects] = RunStep(CelestialObjects, TimeStep)
 	idx = 1;
 	for Obj = CelestialObjects %%Zack Edited
-		[Fx Fy] = CalculateForces(CelestialObjects, Obj(1), Obj(2), Obj(3)); 
-		Ax = Fx / Obj(1);
-		Ay = Fy / Obj(2);
+		[Fx Fy] = CalculateForces(CelestialObjects, CelestialObjects(idx,1), CelestialObjects(idx,1),CelestialObjects(idx,3)); 
+		Ax = Fx / CelestialObjects(idx,3);
+		Ay = Fy / CelestialObjects(idx,3);
 		CelestialObjects(idx,5) = CelestialObjects(idx, 5) + (Ax * TimeStep);
-		CelestialObjects(idx,5) = CelestialObjects(idx,5) + (Ay * TimeStep);
+		CelestialObjects(idx,6) = CelestialObjects(idx,6) + (Ay * TimeStep);
         CelestialObjects(idx,1) = CelestialObjects(idx,1) + (CelestialObjects(idx,5) * TimeStep);
-		CelestialObjects(idx,2) = CelestialObjects(idx,2) + (CelestialObjects(idx,5) * TimeStep);
+		CelestialObjects(idx,2) = CelestialObjects(idx,2) + (CelestialObjects(idx,6) * TimeStep);
 		idx = idx + 1;
 	end
-	CelestialObjects = RemoveCollisions(CelestialObjects);
+	%CelestialObjects = RemoveCollisions(CelestialObjects);
 end 

@@ -178,7 +178,7 @@ function Add_Callback(hObject, eventdata, handles)
 % hObject    handle to Add (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-CelestialObjects(:,:) = [0 0 1.989E30 432687 0;57.9E6 0 .33E24 2439.5 47.4;108.2E6 0 4.87E24 6052 35;149.6E6 0 5.97E24 6378 29.8;227.9E6 0 .642E24 3396 24.1;778.E6 0 1898E24 71492 13.1;1433.5E6 0 569E24 60268 9.7;2872.5E6 0 86.8E24 25559 6.8;4495.1E6 0 102E24 24764 5.4;0 0 0 0 0];
+CelestialObjects(:,:) = [0 0 1.989E30 432687 0 0;57.9E6 0 .33E24 2439.5 0 47.4;108.2E6 0 4.87E24 6052 0 35;149.6E6 0 5.97E24 6378 0 29.8;227.9E6 0 .642E24 3396 0 24.1;778.E6 0 1898E24 71492 0 13.1;1433.5E6 0 569E24 60268 0 9.7;2872.5E6 0 86.8E24 25559 0 6.8;4495.1E6 0 102E24 24764 0 5.4;0 0 0 0 0 0];
 Time = str2double(get(handles.editTime,'String'));
 Mass = str2double(get(handles.earthMass,'String'));
 Angle = str2double(get(handles.editAngle,'String'));
@@ -223,7 +223,10 @@ if ~isnan(Mass) && ~isnan(Time) && (~isnan(Angle)) && (~isnan(Vel)) && isnan(Nam
             choice = 'Neptune';
             x = CelestialObjects(9,1)+CelestialObjects(9,4);
     end
-    CelestialObjects(10,:) = [x y 0 Mass Vel];
+    Xvel = Vel*cos(Angle);
+    Yvel = Vel*sin(Angle);
+    CelestialObjects(10,:) = [x y 1 Mass Xvel Yvel];
+    CelestialObjects
     NewCelestialObjects = RunStep(CelestialObjects,1)
 end
 
