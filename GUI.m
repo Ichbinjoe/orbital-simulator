@@ -224,7 +224,7 @@ if ~isnan(Mass) && ~isnan(Time) && (~isnan(Angle)) && (~isnan(Vel)) && isnan(Nam
             x = CelestialObjects(9,1)+CelestialObjects(9,4);
     end
     CelestialObjects(10,:) = [x y 0 Mass Vel];
-    RunStep(CelestialObjects,1);
+    NewCelestialObjects = RunStep(CelestialObjects,1)
 end
 
 
