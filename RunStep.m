@@ -31,4 +31,3 @@ function [CelestialObjects] = RunStep(CelestialObjects, TimeStep)
 		idx = idx + 1;
 	end
 	%CelestialObjects = RemoveCollisions(CelestialObjects);
-end 

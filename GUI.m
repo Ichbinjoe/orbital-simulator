@@ -178,7 +178,8 @@ function Add_Callback(hObject, eventdata, handles)
 % hObject    handle to Add (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-CelestialObjects(:,:) = [0 0 1.989E30 432687 0 0;57.9E6 0 .33E24 2439.5 0 47.4;108.2E6 0 4.87E24 6052 0 35;149.6E6 0 5.97E24 6378 0 29.8;227.9E6 0 .642E24 3396 0 24.1;778.E6 0 1898E24 71492 0 13.1;1433.5E6 0 569E24 60268 0 9.7;2872.5E6 0 86.8E24 25559 0 6.8;4495.1E6 0 102E24 24764 0 5.4;0 0 0 0 0 0];
+global bool;
+CelestialObjects(:,:) = [0 0 1.989E30 432687 0 0;57.9E6 0 .33E24 2439.5 0.2748 47.4;108.2E6 0 4.87E24 6052 0.2748 35;149.6E6 0 5.97E24 6378 0.2748 29.8;227.9E6 0 .642E24 3396 0.2748 24.1;778.E6 0 1898E24 71492 0.2748 13.1;1433.5E6 0 569E24 60268 0.2748 9.7;2872.5E6 0 86.8E24 25559 0.2748 6.8;4495.1E6 0 102E24 24764 0.2748 5.4;0 0 0 0 0 0];
 Time = str2double(get(handles.editTime,'String'));
 Mass = str2double(get(handles.earthMass,'String'));
 Angle = str2double(get(handles.editAngle,'String'));
@@ -226,9 +227,19 @@ if ~isnan(Mass) && ~isnan(Time) && (~isnan(Angle)) && (~isnan(Vel)) && isnan(Nam
     Xvel = Vel*cos(Angle);
     Yvel = Vel*sin(Angle);
     CelestialObjects(10,:) = [x y 1 Mass Xvel Yvel];
-    CelestialObjects
-    NewCelestialObjects = RunStep(CelestialObjects,1)
+    SetAspectRatio(180,34);
+    for k = 0:1:Time*604800
+        CelestialObjects = RunStep(CelestialObjects,604800);
+        cla(handles.axes1,'reset');
+        Graph(CelestialObjects,handles.axes1);
+        if(bool == true)
+           break; 
+        end
+        pause(.1);
+    end
+    bool = false;
 end
+
 
 
 % --- Executes during object creation, after setting all properties.
@@ -400,11 +411,116 @@ function Clearbutton_Callback(hObject, eventdata, handles)
 % hObject    handle to Clearbutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-set(handles.editX,'String','');
-set(handles.editY,'String','');
-set(handles.editRad,'String','');
-set(handles.editName,'String','');
-set(handles.editVelocity,'String','');
+global bool;
+bool = true;
 
+function [] =  SetAspectRatio(x, y)
+	global PADDING
+	PADDING = 10;
+	global X_WINDOW
+	global Y_WINDOW
+	X_WINDOW = x;
+	Y_WINDOW = y;
+function [CelestialObjects] = RunStep(CelestialObjects, TimeStep)
+	idx = 1;
+	for Obj = CelestialObjects %%Zack Edited
+		[Fx Fy] = CalculateForces(CelestialObjects, CelestialObjects(idx,5), CelestialObjects(idx,6),CelestialObjects(idx,3)); 
+		Ax = Fx / CelestialObjects(idx,3);
+		Ay = Fy / CelestialObjects(idx,3);
+		CelestialObjects(idx,5) = CelestialObjects(idx, 5) + (Ax * TimeStep);
+		CelestialObjects(idx,6) = CelestialObjects(idx,6) + (Ay * TimeStep);
+        CelestialObjects(idx,1) = CelestialObjects(idx,1) + (CelestialObjects(idx,5) * TimeStep);
+		CelestialObjects(idx,2) = CelestialObjects(idx,2) + (CelestialObjects(idx,6) * TimeStep);
+		idx = idx + 1;
+    end
+    
+    function [X, Y] = CalculateForces(CelestialObjects, MyX, MyY, MyMass)
+	X = 0;
+	Y = 0;
+	idx = 1;
+	for Obj = CelestialObjects
+		dx = (CelestialObjects(idx,1) - MyX)
+		dy = (CelestialObjects(idx,2) - MyY)
+		dist2 = dx ^ 2 + dy ^ 2;
+		if dist2 == 0
+			continue
+		end
+		dist2 = dist2 * 1000; % km -> m
+		F = 6.67E-11 * (MyMass + CelestialObjects(idx,3)) / dist2;
+		theta = atan2(dy, dx);
+		X = X + F * cos(theta)
+		Y = Y + F * sin(theta)
+		idx = idx + 1;
+    end
+     
+    function [CelestialObjects] = RemoveCollisions(CelestialObjects)
+	removals = [];
+	if length(CelestialObjects) < 2
+		return
+	end
+	for i = 1:length(CelestialObjects) - 1
+		for j = i:length(CelestialObjects)
+			rdus = CelestialObjects(i,4) + CelestialObjects(j, 4);
+			c_dist_x = CelestialObjects(i, 1) + CelestialObjects(j, 1);
+			c_dist_y = CelestialObjects(i, 2) + CelestialObjects(j, 2);
+			c_dist = sqrt(c_dist_x ^ 1 + c_dist_y ^ 1);
+			if c_dist < rdus
+				if CelestialObjects(i, 4) < CelestialObjects(j, 4)
+					removals = [removals i];
+				else
+					removals = [removals j];
+				end
+			end
+		end
+	end
+	CelestialObjects(removals) = [];
 
+function [MinX, MinY, MaxX, MaxY] = AdjustAspectRatio(MinX, MinY, MaxX, MaxY)
+    global X_WINDOW
+	global Y_WINDOW
+	dx = MaxX - MinX;
+	dy = MaxY - MinY;
+	aspect_x = dx / X_WINDOW;
+	aspect_y = dy / Y_WINDOW;
+	aspect = aspect_y / aspect_x;
+	if aspect > 1
+		aspect_x = aspect_x * aspect;
+	else
+		aspect_y = aspect_y / aspect;
+	end
+	dx = aspect_x * X_WINDOW;
+	dy = aspect_y * Y_WINDOW;
+	MaxX = (MaxX + MinX) / 2 + (dx / 2);
+	MinX = (MaxX + MinX) / 2 - (dx / 2);
+	MaxY = (MaxY + MinY) / 2 + (dy / 2);
+	MinY = (MaxY + MinY) / 2 - (dy / 2);
 
+function [] =  Graph(CelestialObjects, Graph)
+	[MinX, MaxX, MinY, MaxY] = GetBounds(CelestialObjects);
+	[MinX, MinY, MaxX, MaxY] = AdjustAspectRatio(MinX, MinY, MaxX, MaxY);
+	set(Graph, 'XLim', [MinX MaxX]);
+	set(Graph, 'YLim', [MinY MaxY]);
+	
+	[Xs, Ys] = PlotCircle(CelestialObjects(:,1), CelestialObjects(:,2), CelestialObjects(:,4), 100);
+	axes(Graph);
+	plot(Xs, Ys,'*');	
+    
+function [X,Y] = PlotCircle(cx, cy, r, points)
+	X = zeros(points * length(cx), 1);
+	Y = zeros(points * length(cy), 1);
+	idx = 1;
+    for planetIdx = 1:length(cx)
+        for delta = linspace(0, 2*pi, points)
+            X(idx) = r(planetIdx) * cos(delta) + cx(planetIdx);
+            Y(idx) = r(planetIdx) * sin(delta) + cy(planetIdx);
+            idx = idx + 1;
+        end
+    end
+    
+function [MinX, MaxX, MinY, MaxY] = GetBounds(Objects)
+	MinX = min(Objects(:,1) - Objects(:,4));
+	MaxX = max(Objects(:,1) + Objects(:,4));
+	MinY = min(Objects(:,2) - Objects(:,4));
+	MaxY = max(Objects(:,2) + Objects(:,4));
+    
+    

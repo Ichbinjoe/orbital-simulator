@@ -19,7 +19,5 @@ function [CelestialObjects] = RemoveCollisions(CelestialObjects)
 		end
 	end
 	CelestialObjects(removals) = [];
-end
-
 
 

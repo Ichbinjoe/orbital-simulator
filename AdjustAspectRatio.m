@@ -17,6 +17,5 @@ function [MinX, MinY, MaxX, MaxY] = AdjustAspectRatio(MinX, MinY, MaxX, MaxY)
 	MinX = (MaxX + MaxX) / 2 - (dx / 2);
 	MaxY = (MaxY + MinY) / 2 + (dy / 2);
 	MinY = (MaxY + MinY) / 2 - (dy / 2);
-end
 
 
